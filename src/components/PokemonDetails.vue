@@ -16,32 +16,15 @@
                         <v-list-item-subtitle>{{ pokemon.name }}</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
-                <!-- <v-list-item>
-                    <v-list-item-icon>
-                        <v-icon color="success">mdi-star</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title class="font-weight-bold">Type:</v-list-item-title>
-                        <v-list-item-subtitle>{{ pokemon.type }}</v-list-item-subtitle>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item>
-                    <v-list-item-icon>
-                        <v-icon color="warning">mdi-weight</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title class="font-weight-bold">Weight:</v-list-item-title>
-                        <v-list-item-subtitle>{{ pokemon.weight }} kg</v-list-item-subtitle>
-                    </v-list-item-content>
-                </v-list-item> -->
             </v-list>
         </v-card-text>
     </v-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import { Pokemon } from "@/domain/contracts/PokemonRepository";
+import { defineComponent } from "vue";
+import type { PropType } from "vue";
+import type { Pokemon } from "@/domain/contracts/PokemonRepository";
 
 export default defineComponent({
     props: {
