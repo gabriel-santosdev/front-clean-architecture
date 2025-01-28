@@ -7,4 +7,5 @@ export interface Pokemon {
 export interface PokemonRepository {
     fetchPokemonList(): Promise<Pokemon[]>;
     fetchPokemonDetails(id: number): Promise<Pokemon>;
+    searchPokemon(term: string): Promise<Pokemon[]>;
 }

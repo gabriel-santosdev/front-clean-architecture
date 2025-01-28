@@ -1,3 +1,4 @@
+<!-- components/PokemonList.vue -->
 <template>
     <v-container>
         <v-row justify="center">
@@ -7,6 +8,8 @@
                         <v-icon class="mr-2" color="primary">mdi-pokeball</v-icon>
                         Pokémon List
                     </v-card-title>
+
+                    <PokemonSearch @searchResults="updatePokemonList" @searchError="setError" @loading="setLoading" />
 
                     <v-progress-circular v-if="loading" indeterminate color="primary" size="50"
                         class="d-block mx-auto my-4"></v-progress-circular>
@@ -20,8 +23,9 @@
                             <v-card class="pokemon-card" @click="showDetails(pokemon.id)">
                                 <v-img :src="pokemon.image" :alt="pokemon.name" height="150" contain
                                     class="rounded-lg"></v-img>
-                                <v-card-title class="text-center text-capitalize text-primary">{{ pokemon.name
-                                    }}</v-card-title>
+                                <v-card-title class="text-center text-capitalize text-primary">
+                                    {{ pokemon.name }}
+                                </v-card-title>
                             </v-card>
                         </v-col>
                     </v-row>
@@ -32,51 +36,29 @@
                 </v-card>
             </v-col>
         </v-row>
-
-        <v-dialog v-model="showDialog" max-width="500px">
-            <v-card v-if="selectedPokemon">
-                <PokemonDetails :pokemon="selectedPokemon" />
-            </v-card>
-        </v-dialog>
     </v-container>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { PokemonUseCase } from "@/data/useCases/PokemonUseCase";
-import { PokemonRepositoryImpl } from "@/infra/PokemonRepositoryImpl";
-import PokemonDetails from "@/components/PokemonDetails.vue";
+import { ref } from "vue";
+import PokemonSearch from "@/components/PokemonSearch.vue";
 
 const pokemons = ref<{ id: number; name: string; image: string }[]>([]);
-const selectedPokemon = ref<{ id: number; name: string; image: string } | null>(null);
-const showDialog = ref(false);
-const loading = ref(true);
+const loading = ref(false);
 const error = ref<string | null>(null);
 
-const pokemonUseCase = new PokemonUseCase(new PokemonRepositoryImpl());
-
-const loadPokemonList = async () => {
-    try {
-        pokemons.value = await pokemonUseCase.getPokemonList();
-    } catch (err) {
-        error.value = "Erro ao carregar a lista de Pokémon.";
-        console.error(err);
-    } finally {
-        loading.value = false;
-    }
+const updatePokemonList = (results: { id: number; name: string; image: string }[]) => {
+    pokemons.value = results;
+    error.value = null;
 };
 
-const showDetails = async (id: number) => {
-    try {
-        selectedPokemon.value = await pokemonUseCase.getPokemonDetails(id);
-        showDialog.value = true;
-    } catch (err) {
-        error.value = "Erro ao carregar detalhes do Pokémon.";
-        console.error(err);
-    }
+const setError = (errorMessage: string) => {
+    error.value = errorMessage;
 };
 
-onMounted(loadPokemonList);
+const setLoading = (isLoading: boolean) => {
+    loading.value = isLoading;
+};
 </script>
 
 <style scoped>
