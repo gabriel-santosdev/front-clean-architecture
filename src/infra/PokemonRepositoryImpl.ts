@@ -24,14 +24,23 @@ export class PokemonRepositoryImpl implements PokemonRepository {
     }
 
     async searchPokemon(term: string): Promise<Pokemon[]> {
-        const response = await axios.get(`${this.apiUrl}/pokemon?limit=1000`);
-        const filteredResults = response.data.results.filter((item: { name: string }) =>
-            item.name.toLowerCase().includes(term.toLowerCase())
-        );
-        return filteredResults.map((item: { name: string }, index: number) => ({
-            id: index + 1,
-            name: item.name,
-            image: `${this.imageBaseUrl}${index + 1}.png`,
-        }));
+        try {
+            const response = await axios.get(`${this.apiUrl}/pokemon?limit=1000`);
+
+            if (!response.data || !response.data.results) {
+                console.error("Resposta inválida da API:", response.data);
+                return [];
+            }
+            return response.data.results
+                .filter((item: { name: string }) => item.name.toLowerCase().includes(term.toLowerCase()))
+                .map((item: { name: string }, index: number) => ({
+                    id: index + 1,
+                    name: item.name,
+                    image: `${this.imageBaseUrl}${index + 1}.png`,
+                }));
+        } catch (error) {
+            console.error("Erro ao buscar Pokémon:", error);
+            return [];
+        }
     }
 }

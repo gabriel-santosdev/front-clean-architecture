@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits, emit } from "vue";
+import { ref, defineEmits } from "vue";
 import { SearchPokemonUseCase } from "@/data/useCases/SearchPokemonUseCase";
 import { PokemonRepositoryImpl } from "@/infra/PokemonRepositoryImpl";
 import type { Pokemon } from "@/domain/contracts/PokemonRepository";

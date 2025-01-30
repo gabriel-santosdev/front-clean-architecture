@@ -1,8 +1,7 @@
-<!-- components/PokemonList.vue -->
 <template>
     <v-container>
         <v-row justify="center">
-            <v-col cols="12" md="8">
+            <v-col cols="12">
                 <v-card class="pa-6">
                     <v-card-title class="text-h4 text-center font-weight-bold">
                         <v-icon class="mr-2" color="primary">mdi-pokeball</v-icon>
@@ -20,7 +19,7 @@
 
                     <v-row v-if="!loading && pokemons.length">
                         <v-col v-for="pokemon in pokemons" :key="pokemon.id" cols="12" sm="6" md="4">
-                            <v-card class="pokemon-card" @click="showDetails(pokemon.id)">
+                            <v-card class="pokemon-card" @click="showDetails(pokemon)">
                                 <v-img :src="pokemon.image" :alt="pokemon.name" height="150" contain
                                     class="rounded-lg"></v-img>
                                 <v-card-title class="text-center text-capitalize text-primary">
@@ -36,18 +35,26 @@
                 </v-card>
             </v-col>
         </v-row>
+
+        <v-dialog v-model="showDialog" max-width="500px">
+            <PokemonDetails v-if="selectedPokemon" :pokemon="selectedPokemon" />
+        </v-dialog>
     </v-container>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import PokemonSearch from "@/components/PokemonSearch.vue";
+import PokemonDetails from "@/components/PokemonDetails.vue";
+import type { Pokemon } from "@/domain/contracts/PokemonRepository";
 
-const pokemons = ref<{ id: number; name: string; image: string }[]>([]);
+const pokemons = ref<Pokemon[]>([]);
 const loading = ref(false);
 const error = ref<string | null>(null);
+const selectedPokemon = ref<Pokemon | null>(null);
+const showDialog = ref(false);
 
-const updatePokemonList = (results: { id: number; name: string; image: string }[]) => {
+const updatePokemonList = (results: Pokemon[]) => {
     pokemons.value = results;
     error.value = null;
 };
@@ -59,22 +66,9 @@ const setError = (errorMessage: string) => {
 const setLoading = (isLoading: boolean) => {
     loading.value = isLoading;
 };
+
+const showDetails = (pokemon: Pokemon) => {
+    selectedPokemon.value = pokemon;
+    showDialog.value = true;
+};
 </script>
-
-<style scoped>
-.pokemon-card {
-    transition: transform 0.3s ease-in-out;
-    cursor: pointer;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
-
-.pokemon-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.text-primary {
-    color: #ff6f61;
-}
-</style>
